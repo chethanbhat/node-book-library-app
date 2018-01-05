@@ -69,7 +69,7 @@ exports.book_detail = function(req, res) {
             return next(err);
         }
         // Successful, so render.
-        res.render('book_detail', { title: 'Title', book:  results.book, book_instances: results.book_instance } );
+        res.render('book_detail', { title: 'Book Detail', book:  results.book, book_instances: results.book_instance } );
     });
 };
 
@@ -166,21 +166,20 @@ exports.book_create_post = [
 // Display book delete form on GET
 exports.book_delete_get = function(req, res) {
     async.parallel({
-        book: function(callback){
-            Book.findById(req.params.id).exec(callback);
-        },
-        book_bookinstance: function(callback){
-            console.log('failing here');
-            BookInstance.find({'book': req.params.id}).exec(callback);
-        },
-    }, function(err, results){
-        if(err) {return next(err);}
-        if(results.book==null){
-            res.redirect('catalog/books');
-        }
-
-        res.render('book_delete', {title: 'Delete Book', book: results.book, book_bookinstance: book_bookinstance });
-    }); 
+    book: function(callback) {
+        Book.findById(req.params.id).exec(callback)
+    },
+    book_instance: function(callback) {
+      BookInstance.find({ 'book': req.params.id }).exec(callback)
+    },
+}, function(err, results) {
+    if (err) { return next(err); }
+    if (results.book==null) { // No results.
+        res.redirect('/catalog/books');
+    }
+    // Successful, so render.
+    res.render('book_delete', { title: 'Delete Book', book: results.book, book_instance: results.book_instance} );
+}); 
 };
 
 // Handle book delete on POST
@@ -189,13 +188,13 @@ exports.book_delete_post = function(req, res) {
         book: function(callback){
             Book.findById(req.params.id).exec(callback);
         },
-        book_bookinstance: function(callback){
+        book_instance: function(callback){
             BookInstance.find({'book': req.params.id}).exec(callback);
         },
     }, function(err, results){
         if(err) {return next(err);}
         if(results.book_bookinstance > 1){
-            res.render('book_delete', {title: 'Delete Book', book: results.book, book_bookinstance: book_bookinstance });
+            res.render('book_delete', {title: 'Delete Book', book: results.book, book_instance: book_instance });
             return;
         }
         else {
@@ -207,7 +206,7 @@ exports.book_delete_post = function(req, res) {
             })
         } 
     }); 
-};
+};  
 
 // Display book update form on GET
 exports.book_update_get = function(req, res, next) {

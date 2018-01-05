@@ -1,10 +1,9 @@
 extends layout
 
 block content
-  h1 #{title}: #{book.name}
-  p= book.summary
+  h1 #{title}: #{book.title}
   
-  if book_bookinstance.length
+  if book_instance.length
   
     p #[strong Delete the following book instances before attempting to delete this book.]
   
@@ -13,7 +12,7 @@ block content
       h4 Book Instances
     
       dl
-      each instance in book_bookinstance
+      each instance in book_instance
         dt 
           a(href=instance.url) #{instance.id}
 

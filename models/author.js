@@ -48,5 +48,6 @@ AuthorSchema
   var dod = this.date_of_death ? moment(this.date_of_death).format('YYYY-MM-DD') : 'N.A';
   return `${dob} - ${dod}`
 });
+
 //Export model
 module.exports = mongoose.model('Author', AuthorSchema);
